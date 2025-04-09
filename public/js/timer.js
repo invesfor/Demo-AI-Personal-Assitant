@@ -1,8 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
     const timerManager = new TimerManager();
 
+    // Thêm sự kiện lắng nghe phím "Enter"
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                const form = backdrop.querySelector('form');
+                if (form) {
+                    e.preventDefault(); // Ngăn chặn hành vi mặc định của form
+                    handleTimerSubmit(form);
+                }
+            }
+        }
+    });
+
     // Thêm sự kiện lắng nghe cho nút "Time Button"
-    const timeButton = document.getElementById('time-button');
+    const timeButton = document.getElementById('time-button'); // Giả sử nút "Time Button" có id là 'time-button'
     if (timeButton) {
         timeButton.addEventListener('click', () => {
             const backdrop = document.querySelector('.modal-backdrop');
@@ -92,14 +106,6 @@ function createTimerForm() {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         handleTimerSubmit(form);
-    });
-
-    // Thêm sự kiện lắng nghe phím "Enter" cho form
-    form.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            handleTimerSubmit(form);
-        }
     });
 
     form.appendChild(submitButton);
@@ -296,19 +302,9 @@ function createAlarmNotification(note) {
 
 /* ========== TIMER LOGIC ========== */
 function handleTimerSubmit(form) {
-    if (!form) return;
-
-    const timerTypeSelect = form.querySelector('select');
-    if (!timerTypeSelect) return;
-
-    const getValue = selector => {
-        const input = form.querySelector(selector);
-        return input ? parseInt(input.value || 0) : 0;
-    };
-
-    const timerType = timerTypeSelect.value;
-    const noteInput = form.querySelector('[placeholder="Nhập ghi chú"]');
-    const note = noteInput ? noteInput.value.trim() : '';
+    const getValue = selector => parseInt(form.querySelector(selector)?.value || 0);
+    const timerType = form.querySelector('select').value;
+    const note = form.querySelector('[placeholder="Nhập ghi chú"]').value.trim();
     
     // Kiểm tra dữ liệu đầu vào
     const hours = getValue('[placeholder="Giờ"]');

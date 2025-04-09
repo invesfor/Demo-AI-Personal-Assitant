@@ -56,27 +56,14 @@ function createForm(isLogin) {
         { type: 'password', placeholder: 'Xác nhận mật khẩu', name: 'confirmPassword' }
     ];
     
-    const inputElements = [];
-    
-    inputs.forEach((inputData, index) => {
+    inputs.forEach(inputData => {
         const input = createInput(inputData);
-        inputElements.push(input);
-        
-        // Xử lý phím Enter
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                
-                // Nếu là input cuối cùng thì submit form
-                if (index === inputs.length - 1) {
-                    handleFormSubmit(isLogin);
-                } else {
-                    // Focus vào input tiếp theo
-                    inputElements[index + 1].focus();
-                }
+                handleFormSubmit(isLogin);
             }
         });
-        
         form.appendChild(input);
     });
     
@@ -139,7 +126,7 @@ function handleFormSubmit(isLogin) {
             if (data.success) {
                 localStorage.setItem('sessionToken', data.user.sessionToken);
                 localStorage.setItem('currentUser', JSON.stringify(data.user));
-                showNotification('Đã Đăng Nhập!', 'success');
+                showNotification('Đăng nhập thành công!', 'success');
                 setTimeout(() => window.location.reload(), 1000);
             } else {
                 showNotification(data.error, 'error');
@@ -200,140 +187,25 @@ function createCloseButton(closeCallback) {
 }
 
 function showNotification(message, type = 'info') {
-    const container = document.querySelector('.timer-notifications-sidebar');
+    const container = document.getElementById('timer-notifications-sidebar');
     if (!container) return;
     
     const notification = document.createElement('div');
-    notification.className = `timer-notification ${type}`;
-    
-    const noteElement = document.createElement('div');
-    noteElement.className = 'timer-note';
-    noteElement.textContent = message;
-    notification.appendChild(noteElement);
-    
-    const buttonsContainer = document.createElement('div');
-    buttonsContainer.className = 'notification-buttons';
-    
-    const closeButton = document.createElement('button');
-    closeButton.className = 'notification-button';
-    closeButton.textContent = '✕';
-    closeButton.onclick = () => {
-        notification.classList.add('removing');
-        setTimeout(() => notification.remove(), 300);
-    };
-    
-    buttonsContainer.appendChild(closeButton);
-    notification.appendChild(buttonsContainer);
-    
-    // Thêm class dựa trên type
-    if (type === 'success') {
-        notification.style.background = 'linear-gradient(135deg, rgba(16,185,129,0.2) 0%, rgba(52,211,153,0.2) 100%)';
-        notification.style.borderColor = 'rgba(52,211,153,0.3)';
-    } else if (type === 'error') {
-        notification.style.background = 'linear-gradient(135deg, rgba(239,68,68,0.2) 0%, rgba(220,38,38,0.2) 100%)';
-        notification.style.borderColor = 'rgba(239,68,68,0.3)';
-    }
+    notification.textContent = message;
+    notification.classList.add('notification', type);
     
     container.insertBefore(notification, container.firstChild);
     
     setTimeout(() => {
-        notification.style.opacity = '1';
-    }, 10);
-    
-    // Tự động xóa sau 3 giây
-    setTimeout(() => {
-        notification.classList.add('removing');
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 500);
+    }, 2300);
 }
 
-function showLoginModal() {
+export function showLoginModal() {
     createModal('login');
 }
 
-function showRegisterModal() {
+export function showRegisterModal() {
     createModal('register');
 }
-
-// Thêm hàm kiểm tra trạng thái đăng nhập
-function checkAuthState() {
-    const sessionToken = localStorage.getItem('sessionToken');
-    const currentUser = localStorage.getItem('currentUser');
-    const guestButtons = document.getElementById('guestButtons');
-    const userButtons = document.getElementById('userButtons');
-    
-    if (sessionToken && currentUser) {
-        // User đã đăng nhập
-        guestButtons.style.display = 'none';
-        userButtons.style.display = 'flex';
-    } else {
-        // User chưa đăng nhập
-        guestButtons.style.display = 'flex';
-        userButtons.style.display = 'none';
-    }
-}
-
-// Xử lý đăng xuất
-async function handleLogout() {
-    try {
-        const sessionToken = localStorage.getItem('sessionToken');
-        if (sessionToken) {
-            const response = await fetch('/api/logout', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ sessionToken })
-            });
-
-            const data = await response.json();
-            
-            if (data.success) {
-                localStorage.removeItem('sessionToken');
-                localStorage.removeItem('currentUser');
-                localStorage.removeItem('chatbot_username');
-                showNotification('Đã Đăng Xuất', 'success');
-                checkAuthState(); // Cập nhật UI
-                setTimeout(() => window.location.reload(), 1000);
-            } else {
-                showNotification(data.error, 'error');
-            }
-        }
-    } catch (error) {
-        showNotification('Lỗi kết nối server', 'error');
-    }
-}
-
-// Hiển thị modal tài khoản
-function showAccountModal() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (!currentUser) return;
-
-    const backdrop = createBackdrop();
-    const modal = createModalContainer();
-    modal.innerHTML = `
-        <h2 class="modal-title">Thông tin tài khoản</h2>
-        <div class="account-info">
-            <p><strong>Tên đăng nhập:</strong> ${currentUser.username}</p>
-            <p><strong>Email:</strong> ${currentUser.email}</p>
-        </div>
-    `;
-    
-    const closeButton = createCloseButton(() => backdrop.remove());
-    modal.appendChild(closeButton);
-    backdrop.appendChild(modal);
-    document.body.appendChild(backdrop);
-}
-
-// Gọi checkAuthState khi trang được tải
-document.addEventListener('DOMContentLoaded', () => {
-    checkAuthState();
-});
-
-export {
-    showLoginModal,
-    showRegisterModal,
-    showAccountModal,
-    handleLogout,
-    checkAuthState
-};

@@ -106,25 +106,6 @@ app.get('/api/user/profile', requireAuth, (req, res) => {
     });
 });
 
-// API endpoint cho cài đặt mô hình
-app.post('/api/model-settings', (req, res) => {
-    try {
-        const settings = req.body;
-        // Lưu cài đặt vào session hoặc database nếu cần
-        req.session.modelSettings = settings;
-        
-        res.json({ 
-            success: true, 
-            message: 'Đã lưu cài đặt mô hình thành công' 
-        });
-    } catch (error) {
-        res.status(400).json({ 
-            success: false, 
-            error: error.message 
-        });
-    }
-});
-
 // Serve index.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/index.html'));

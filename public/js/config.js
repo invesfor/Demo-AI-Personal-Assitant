@@ -6,9 +6,9 @@
 export const CONFIG = {
     // Cấu hình API
     API: {
-        BASE_URL: 'http://localhost:3000',
+        BASE_URL: 'http://localhost:11434/v1',
         GEMMA_MODEL: localStorage.getItem('selectedModel') || 'gemma2:2b', // Lấy model từ localStorage nếu có
-        OLLAMA_URL: 'http://localhost:11434',
+        OLLAMA_URL: 'http://localhost:11434/api',
         ENDPOINTS: {
             CHAT: '/chat',
             LIST_MODELS: '/api/tags',
@@ -81,17 +81,16 @@ export const CONFIG = {
 - Tránh dùng thuật ngữ phức tạp
 - Luôn trả lời bằng tiếng việt
 - Xưng hô thân thiện với người dùng`,
-        INTRODUCTION: {
-            GREETING: "Xin chào👋! Tôi là một trợ lý ảo cá nhân thông minh.",
-            FEATURES: [
-                "Cung cấp thông tin về thời tiết, thời gian 🌤️",
-                "Tạo thời khóa biểu 📅",
-                "Lập kế hoạch và nhắc nhở ⏰",
-                "Đặt báo thức và hẹn giờ ⌚",
-                "Học hỏi thói quen và hỗ trợ bạn 🧠"
-            ],
-            NAME_REQUEST: "Tôi có thể xưng hô với bạn như thế nào nhỉ? 😊"
-        }
+        INTRODUCTION: `Xin chào! 👋 
+
+Tôi là một trợ lý ảo cá nhân thông minh, có thể:
+- Học hỏi thói quen người dùng 🧠
+- Lập kế hoạch và nhắc nhở ⏰
+- Đặt báo thức và hẹn giờ ⌚
+- Xem thời tiết và thời gian 🌤️
+- Tạo thời khóa biểu 📅
+
+Tôi có thể xưng hô với bạn như thế nào nhỉ? 😊`
     },
     // Thêm cấu hình cho user
     USER: {
@@ -110,14 +109,3 @@ export function updateModelConfig(modelName) {
 export function getCurrentModel() {
     return CONFIG.API.GEMMA_MODEL;
 }
-
-function capitalizeUserName(name) {
-    if (!name) return name;
-    return name.split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(' ');
-}
-
-const capitalizedName = capitalizeUserName(name);
-CONFIG.USER.name = capitalizedName;
-localStorage.setItem(CONFIG.USER.storageKey, capitalizedName);
