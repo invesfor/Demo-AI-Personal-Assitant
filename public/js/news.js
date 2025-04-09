@@ -16,7 +16,7 @@ export function showNews() {
     header.className = 'news-header';
     
     const title = document.createElement('h2');
-    title.textContent = 'Tin Tức Mới Nhất';
+    title.textContent = 'Tin Tức Tài Chính';
     
     const headerButtons = document.createElement('div');
     headerButtons.className = 'news-header-buttons';
@@ -45,7 +45,7 @@ export function showNews() {
     // Add loading message
     const loadingMessage = document.createElement('div');
     loadingMessage.className = 'news-loading';
-    loadingMessage.innerHTML = '<span>↺</span> Đang tải tin tức';
+    loadingMessage.innerHTML = '<span>↺</span> Đang tải tin tức tài chính';
     
     // Assemble container
     content.appendChild(loadingMessage);
@@ -106,11 +106,19 @@ async function fetchNews() {
     newsList.className = 'news-list';
     
     try {
-        const response = await fetch(`${NEWS_API_URL}?country=vi&category=top&apikey=${NEWS_API_KEY}`);
+        // Thay đổi category thành business để lấy tin tài chính
+        const response = await fetch(`${NEWS_API_URL}?country=vi&category=business&apikey=${NEWS_API_KEY}`);
         const data = await response.json();
         
         if (data.status === 'success' && data.results) {
-            data.results.forEach(article => {
+            // Lọc thêm các tin tức liên quan đến tài chính
+            const financeKeywords = ['tài chính', 'chứng khoán', 'ngân hàng', 'lãi suất', 'đầu tư', 'kinh doanh', 'doanh nghiệp', 'thị trường', 'cổ phiếu', 'trái phiếu'];
+            const financeNews = data.results.filter(article => {
+                const title = article.title.toLowerCase();
+                return financeKeywords.some(keyword => title.includes(keyword));
+            });
+
+            financeNews.forEach(article => {
                 const newsItem = document.createElement('li');
                 newsItem.className = 'news-item';
                 
@@ -164,13 +172,20 @@ async function fetchNews() {
                 newsItem.appendChild(contentWrapper);
                 newsList.appendChild(newsItem);
             });
+
+            if (financeNews.length === 0) {
+                const noNewsMessage = document.createElement('div');
+                noNewsMessage.className = 'news-error';
+                noNewsMessage.innerHTML = '⚠️ Không có tin tức tài chính mới trong thời gian này.';
+                newsList.appendChild(noNewsMessage);
+            }
         } else {
             throw new Error('Không thể tải tin tức');
         }
     } catch (error) {
         const errorMessage = document.createElement('div');
         errorMessage.className = 'news-error';
-        errorMessage.innerHTML = '⚠️ Đã xảy ra lỗi khi tải tin tức. Vui lòng thử lại sau.';
+        errorMessage.innerHTML = '⚠️ Đã xảy ra lỗi khi tải tin tức tài chính. Vui lòng thử lại sau.';
         newsList.appendChild(errorMessage);
     }
     

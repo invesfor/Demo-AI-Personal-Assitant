@@ -5,7 +5,7 @@
 import { CONFIG, updateModelConfig, getCurrentModel } from './config.js';
 
 // Thêm biến để theo dõi model hiện tại
-let currentModel = getCurrentModel();
+let currentModel = localStorage.getItem('selectedModel') || CONFIG.API.GEMMA_MODEL;
 let availableModels = [];
 let currentCategory = 'all';
 const MODEL_CATEGORIES = CONFIG.MODEL.CATEGORIES;
@@ -34,148 +34,95 @@ function getModelCategory(modelName) {
 
 // Expose showModelSettings globally
 export function showModelSettings() {
+    // Tạo backdrop
+    const backdrop = document.createElement('div');
+    backdrop.className = 'settings-backdrop';
+    
+    // Tạo modal
     const modal = document.createElement('div');
-    modal.className = 'modal';
+    modal.className = 'model-settings-modal';
+    
+    // Tạo nội dung modal
     modal.innerHTML = `
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>⚙️ Cài Đặt Mô Hình AI</h2>
-                <button class="close-button">&times;</button>
+        <div class="model-settings-header">
+            <h2 class="model-settings-title">🛠 Cài Đặt LLM</h2>
+            <div class="model-subtitle">Chọn mô hình AI phù hợp với nhu cầu của bạn</div>
+        </div>
+        <div class="model-settings-content">
+            <div class="category-section">
+                <div class="section-title">Danh Mục</div>
+                <div class="model-categories">
+                    ${Object.entries(MODEL_CATEGORIES).map(([key, category]) => `
+                        <button class="model-category ${key === currentCategory ? 'active' : ''}" data-category="${key}">
+                            <span class="category-icon">${category.icon}</span>
+                            <span class="category-name">${category.name}</span>
+                        </button>
+                    `).join('')}
+                </div>
             </div>
-            <div class="modal-body">
-                <div class="settings-section">
-                    <h3>Chọn Mô Hình</h3>
-                    <div class="form-group">
-                        <label for="model-type">Loại Mô Hình:</label>
-                        <select id="model-type" class="model-select">
-                            <option value="gpt-3.5-turbo" ${currentModel === 'gpt-3.5-turbo' ? 'selected' : ''}>GPT-3.5 Turbo</option>
-                            <option value="gpt-4" ${currentModel === 'gpt-4' ? 'selected' : ''}>GPT-4</option>
-                            <option value="claude-3-opus" ${currentModel === 'claude-3-opus' ? 'selected' : ''}>Claude 3 Opus</option>
-                            <option value="claude-3-sonnet" ${currentModel === 'claude-3-sonnet' ? 'selected' : ''}>Claude 3 Sonnet</option>
-                        </select>
+            
+            <div class="model-section">
+                <div class="section-title">Mô Hình Khả Dụng</div>
+                <div class="model-list">
+                    <div class="model-loading">
+                        <div class="loading-spinner"></div>
+                        <div>Đang tải danh sách mô hình...</div>
                     </div>
-                </div>
-                
-                <div class="settings-section">
-                    <h3>Điều Chỉnh Tham Số</h3>
-                    <div class="form-group">
-                        <label for="temperature">Temperature: <span id="temperature-value">0.7</span></label>
-                        <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7" class="slider">
-                        <div class="slider-labels">
-                            <span>Chính xác</span>
-                            <span>Sáng tạo</span>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="max-tokens">Max Tokens:</label>
-                        <input type="number" id="max-tokens" min="100" max="4000" value="2000" class="number-input">
-                        <div class="input-hint">Độ dài tối đa của câu trả lời (100-4000)</div>
-                    </div>
-                </div>
-                
-                <div class="settings-section">
-                    <h3>Hệ Thống Prompt</h3>
-                    <div class="form-group">
-                        <label for="system-prompt">System Prompt:</label>
-                        <textarea id="system-prompt" rows="4" class="prompt-textarea">Bạn là một trợ lý AI thông minh và hữu ích.</textarea>
-                    </div>
-                </div>
-                
-                <div class="form-actions">
-                    <button class="cancel-button">Hủy</button>
-                    <button class="save-button">Lưu Cài Đặt</button>
                 </div>
             </div>
         </div>
+        <button class="close-settings">✕</button>
     `;
-
-    // Thêm modal vào body
-    document.body.appendChild(modal);
-
-    // Load cài đặt hiện tại
-    const storedSettings = localStorage.getItem('modelSettings');
-    if (storedSettings) {
-        const settings = JSON.parse(storedSettings);
-        modal.querySelector('#model-type').value = settings.modelType;
-        modal.querySelector('#temperature').value = settings.temperature;
-        modal.querySelector('#max-tokens').value = settings.maxTokens;
-        modal.querySelector('#system-prompt').value = settings.systemPrompt;
-        modal.querySelector('#temperature-value').textContent = settings.temperature;
-    }
-
-    // Xử lý sự kiện đóng modal
-    const closeButton = modal.querySelector('.close-button');
-    const cancelButton = modal.querySelector('.cancel-button');
-    const saveButton = modal.querySelector('.save-button');
-    const temperatureInput = modal.querySelector('#temperature');
-    const temperatureValue = modal.querySelector('#temperature-value');
-
-    closeButton.addEventListener('click', () => {
-        modal.classList.add('fade-out');
-        setTimeout(() => document.body.removeChild(modal), 300);
-    });
-
-    cancelButton.addEventListener('click', () => {
-        modal.classList.add('fade-out');
-        setTimeout(() => document.body.removeChild(modal), 300);
-    });
-
-    // Cập nhật giá trị temperature khi kéo thanh trượt
-    temperatureInput.addEventListener('input', () => {
-        temperatureValue.textContent = temperatureInput.value;
-    });
-
-    // Xử lý lưu cài đặt
-    saveButton.addEventListener('click', async () => {
-        const settings = {
-            modelType: modal.querySelector('#model-type').value,
-            temperature: parseFloat(modal.querySelector('#temperature').value),
-            maxTokens: parseInt(modal.querySelector('#max-tokens').value),
-            systemPrompt: modal.querySelector('#system-prompt').value
+    
+    // Thêm vào DOM
+    backdrop.appendChild(modal);
+    document.body.appendChild(backdrop);
+    
+    // Xử lý đóng modal
+    const closeBtn = modal.querySelector('.close-settings');
+    closeBtn.onclick = () => backdrop.remove();
+    backdrop.onclick = (e) => {
+        if (e.target === backdrop) backdrop.remove();
+    };
+    
+    // Xử lý chọn category
+    const categoryButtons = modal.querySelectorAll('.model-category');
+    categoryButtons.forEach(button => {
+        button.onclick = () => {
+            currentCategory = button.dataset.category;
+            categoryButtons.forEach(btn => btn.classList.toggle('active', btn === button));
+            filterAndDisplayModels(modal);
         };
-
-        try {
-            // Gửi cài đặt lên server
-            const response = await fetch(`${CONFIG.API.BASE_URL}/api/model-settings`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(settings)
-            });
-
-            const data = await response.json();
-            
-            if (data.success) {
-                // Lưu cài đặt vào localStorage
-                localStorage.setItem('modelSettings', JSON.stringify(settings));
-                currentModel = settings.modelType;
-                updateModelConfig(currentModel);
-                
-                // Cập nhật UI
-                updateUIWithSettings(settings);
-                
-                // Hiển thị thông báo thành công
-                showNotification('Đã lưu cài đặt thành công!', 'success');
-                
-                // Đóng modal
-                modal.classList.add('fade-out');
-                setTimeout(() => document.body.removeChild(modal), 300);
-            } else {
-                showNotification(data.error || 'Lỗi khi lưu cài đặt', 'error');
-            }
-        } catch (error) {
-            console.error('Lỗi khi lưu cài đặt:', error);
-            showNotification('Lỗi kết nối server. Vui lòng thử lại.', 'error');
-        }
     });
-
-    // Hiển thị modal với animation
+    
+    // Tải danh sách mô hình
+    loadModels(modal);
+    
+    // Thêm hiệu ứng xuất hiện
+    modal.style.opacity = '0';
+    modal.style.transform = 'translateY(20px)';
     setTimeout(() => {
-        modal.style.display = 'flex';
-        modal.querySelector('.modal-content').classList.add('show');
-    }, 10);
+        modal.style.opacity = '1';
+        modal.style.transform = 'translateY(0)';
+    }, 100);
+
+    // Đồng bộ hiệu ứng click với các modal khác
+    backdrop.style.backdropFilter = 'blur(8px)';
+    backdrop.style.webkitBackdropFilter = 'blur(8px)';
+    
+    // Thêm hiệu ứng hover chuyên nghiệp
+    const modelList = modal.querySelector('.model-list');
+    modelList.querySelectorAll('.model-item').forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            item.style.transform = 'translateY(-2px) scale(1.02)';
+        });
+        
+        item.addEventListener('mouseleave', () => {
+            if(!item.classList.contains('active')) {
+                item.style.transform = 'translateY(0) scale(1)';
+            }
+        });
+    });
 }
 
 async function loadModels(modal) {
@@ -354,39 +301,51 @@ function filterAndDisplayModels(modal) {
 
 // Thêm hàm showNotification nếu chưa có
 function showNotification(message, type = 'info') {
+    const container = document.querySelector('.timer-notifications-sidebar');
+    if (!container) return;
+    
     const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = `
-        <div class="notification-content">
-            <span class="notification-icon">${type === 'success' ? '✓' : '✕'}</span>
-            <span class="notification-message">${message}</span>
-        </div>
-        <button class="notification-close">&times;</button>
-    `;
+    notification.className = `timer-notification ${type}`;
     
-    document.body.appendChild(notification);
+    const noteElement = document.createElement('div');
+    noteElement.className = 'timer-note';
+    noteElement.textContent = message;
+    notification.appendChild(noteElement);
     
-    // Thêm hiệu ứng xuất hiện
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.className = 'notification-buttons';
+    
+    const closeButton = document.createElement('button');
+    closeButton.className = 'notification-button';
+    closeButton.textContent = '✕';
+    closeButton.onclick = () => {
+        notification.classList.add('removing');
+        setTimeout(() => notification.remove(), 300);
+    };
+    
+    buttonsContainer.appendChild(closeButton);
+    notification.appendChild(buttonsContainer);
+    
+    // Thêm class dựa trên type
+    if (type === 'success') {
+        notification.style.background = 'linear-gradient(135deg, rgba(16,185,129,0.2) 0%, rgba(52,211,153,0.2) 100%)';
+        notification.style.borderColor = 'rgba(52,211,153,0.3)';
+    } else if (type === 'error') {
+        notification.style.background = 'linear-gradient(135deg, rgba(239,68,68,0.2) 0%, rgba(220,38,38,0.2) 100%)';
+        notification.style.borderColor = 'rgba(239,68,68,0.3)';
+    }
+    
+    container.insertBefore(notification, container.firstChild);
+    
     setTimeout(() => {
-        notification.classList.add('show');
+        notification.style.opacity = '1';
     }, 10);
     
-    // Tự động đóng sau 3 giây
+    // Tự động xóa sau 3 giây
     setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            document.body.removeChild(notification);
-        }, 300);
+        notification.classList.add('removing');
+        setTimeout(() => notification.remove(), 300);
     }, 3000);
-    
-    // Xử lý nút đóng
-    const closeBtn = notification.querySelector('.notification-close');
-    closeBtn.addEventListener('click', () => {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            document.body.removeChild(notification);
-        }, 300);
-    });
 }
 
 // Thêm hàm khởi tạo để load model đã chọn khi trang được tải
@@ -399,40 +358,9 @@ function initializeModelSettings() {
 }
 
 // Gọi hàm khởi tạo khi trang được load
-document.addEventListener('DOMContentLoaded', () => {
-    const modelSettingsBtn = document.getElementById('model-settings-btn');
-    if (modelSettingsBtn) {
-        modelSettingsBtn.addEventListener('click', showModelSettings);
-    }
-    
-    // Load cài đặt từ localStorage
-    loadStoredSettings();
-});
+document.addEventListener('DOMContentLoaded', initializeModelSettings);
 
-// Hàm load cài đặt đã lưu
-function loadStoredSettings() {
-    const storedSettings = localStorage.getItem('modelSettings');
-    if (storedSettings) {
-        const settings = JSON.parse(storedSettings);
-        currentModel = settings.modelType;
-        updateUIWithSettings(settings);
-    }
-}
-
-// Hàm cập nhật UI với cài đặt
-function updateUIWithSettings(settings) {
-    const modelInfo = document.querySelector('.model-info');
-    if (modelInfo) {
-        modelInfo.innerHTML = `
-            <span class="current-model">Model: ${settings.modelType}</span>
-            <span class="model-temp">Temp: ${settings.temperature}</span>
-        `;
-    }
-}
-
-// Export các hàm cần thiết
-export {
-    showModelSettings,
-    currentModel,
-    loadStoredSettings
+const getValue = selector => {
+    const input = form.querySelector(selector);
+    return input ? parseInt(input.value || 0) : 0;
 };

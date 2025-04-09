@@ -1,28 +1,21 @@
 /* Kiểu dáng cơ bản */
 body {
     font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe4e4 100%);
     margin: 0;
     padding: 0;
     display: flex;
-    color: #e0e0e0;
+    color: #4a4a4a;
     font-weight: 500;
     letter-spacing: 0.7px;
     
 }
 /* Kiểu dáng nội dung chính */
 .main-content {
-    margin-left: 320px;
-    padding: 20px max(32px, calc((100vw - 1270px) / 2));
-    width: calc(100% - 320px);
-    max-width: 1670px;
-    position: relative;
-    z-index: 50;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: margin-left, width;
+    flex: 1;
+    padding: 20px;
+    margin-left: 280px;
+    transition: all 0.3s ease;
 }
 
 /* Kiểu dáng nội dung chính khi thanh bên bị ẩn */
@@ -36,19 +29,14 @@ body {
 
 /* Kiểu dáng tiêu đề h1 */
 h1 {
-    font-size: 32px;
-    font-weight: 600;
-    background: linear-gradient(135deg, #60a5fa 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #4dabf7 0%, #339af0 100%);
     -webkit-background-clip: text;
     background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin: 0 0 20px;
-    padding: 0;
+    color: transparent;
+    font-size: 2.5em;
+    margin-bottom: 30px;
     text-align: center;
     position: relative;
-    width: 100%;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform;
 }
 
 /* Thêm đường gạch trang trí dưới tiêu đề */
@@ -60,11 +48,9 @@ h1::after {
     transform: translateX(-50%);
     width: 100px;
     height: 3px;
-    background: linear-gradient(90deg, #60a5fa 0%, #4f46e5 100%);
-    border-radius: 2px;
+    background: linear-gradient(135deg, #4dabf7 0%, #339af0 100%);
+    border-radius: 3px;
 }
-
-
 
 /* Kiểu dáng chung cho nút */
 button {
@@ -95,22 +81,17 @@ button:active {
 /* Nâng cấp toggle-sidebar */
 .toggle-sidebar {
     position: fixed;
-    left: 24px;
-    top: 32px;
-    z-index: 900;
-    background: linear-gradient(135deg, rgba(61,61,61,0.7) 0%, rgba(51,51,51,0.7) 100%);
-    color: #60a5fa;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
+    left: 280px;
+    top: 20px;
+    background: linear-gradient(135deg, rgba(230,243,255,0.7) 0%, rgba(204,230,255,0.7) 100%);
+    border: 1px solid rgba(116,192,252,0.3);
+    color: #339af0;
+    padding: 8px 12px;
+    border-radius: 8px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    will-change: transform, box-shadow;
+    transition: all 0.3s ease;
+    z-index: 1001;
+    box-shadow: 0 2px 4px rgba(51,154,240,0.2);
 }
 
 /* Kích thước khi sidebar đóng */
@@ -131,50 +112,11 @@ button:active {
 
 /* Animation cho arrow trong toggle-sidebar */
 .toggle-sidebar .arrow {
-    font-size: 20px;
-    color: #60a5fa;
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    will-change: transform;
+    transition: transform 0.3s ease;
 }
 
 .toggle-sidebar .arrow.rotated {
     transform: rotate(180deg) scale(1.1);
-}
-
-/* Kiểu dáng container thông báo */
-.notification-container {
-    position: fixed;
-    top: 24px;
-    right: 24px;
-    z-index: 1100;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 12px;
-    max-width: 320px;
-}
-
-/* Kiểu dáng thông báo */
-.notification-container > div {
-    background-color: #2d2d2d;
-    color: #e0e0e0;
-    padding: 12px 16px;
-    border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-    animation: slideIn 0.3s ease;
-    width: 100%;
-}
-
-/* Định nghĩa hiệu ứng animation */
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 /* Điều chỉnh responsive cho màn hình trung bình */
@@ -313,9 +255,8 @@ button:active {
 
 /* Animation cho hover states */
 .toggle-sidebar:hover {
-    transform: translateY(-4px) scale(1.05);
-    background: linear-gradient(135deg, rgba(79,70,229,0.2) 0%, rgba(59,130,246,0.2) 100%);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    background: linear-gradient(135deg, rgba(204,230,255,0.8) 0%, rgba(230,243,255,0.8) 100%);
+    box-shadow: 0 4px 8px rgba(51,154,240,0.3);
 }
 
 .toggle-sidebar:hover .arrow {

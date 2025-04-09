@@ -85,20 +85,20 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
-    background: rgba(26,26,26,0.8);
+    background: rgba(255,245,245,0.8);
     padding: 20px;
     border-radius: 12px;
-    border: 2px solid rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,182,193,0.3);
 }
 
 /* Form inputs */
 .timer-input {
     padding: 12px;
     text-align: center;
-    border: 2px solid rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,182,193,0.3);
     border-radius: 12px;
-    background: rgba(26,26,26,0.95);
-    color: #e0e0e0;
+    background: rgba(255,245,245,0.95);
+    color: #4a4a4a;
     font-size: 18px;
     font-weight: 600;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -106,15 +106,15 @@
 
 .timer-input:focus {
     outline: none;
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79,70,229,0.3);
+    border-color: #ff1493;
+    box-shadow: 0 0 0 3px rgba(255,105,180,0.3);
     transform: scale(1.01);
 }
 
 /* Form labels */
 .timer-label {
     text-align: center;
-    color: #a0a0a0;
+    color: #ff69b4;
     font-size: 14px;
     margin-top: 8px;
 }
@@ -146,42 +146,71 @@
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     min-width: 120px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(255,182,193,0.2);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    letter-spacing: 0.5px;
+}
+
+.timer-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 /* Start Button */
 .start-button {
-    background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
     color: white;
 }
 
 .start-button:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 20px rgba(79,70,229,0.3);
+    box-shadow: 0 6px 20px rgba(255,105,180,0.3);
+}
+
+.start-button:hover::before {
+    opacity: 1;
 }
 
 /* Pause Button */
 .pause-button {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    background: linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 100%);
     color: white;
 }
 
 .pause-button:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 20px rgba(245,158,11,0.3);
+    box-shadow: 0 6px 20px rgba(255,182,193,0.3);
 }
 
-/* 
+.pause-button:hover::before {
+    opacity: 1;
+}
 
-Button */
+/* Stop Button */
 .stop-button {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    background: linear-gradient(135deg, #ff1493 0%, #ff69b4 100%);
     color: white;
 }
 
 .stop-button:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 20px rgba(239,68,68,0.3);
+    box-shadow: 0 6px 20px rgba(255,105,180,0.3);
+}
+
+.stop-button:hover::before {
+    opacity: 1;
 }
 
 /* Active state for all buttons */
@@ -200,24 +229,47 @@ Button */
 }
 
 .preset-button {
-    padding: 10px 16px;
-    background: rgba(79,70,229,0.1);
-    border: 1px solid rgba(79,70,229,0.2);
-    border-radius: 10px;
-    color: #60a5fa;
-    font-size: 14px;
+    padding: 12px 20px;
+    background: rgba(255,182,193,0.1);
+    border: 1px solid rgba(255,182,193,0.2);
+    border-radius: 12px;
+    color: #ff69b4;
+    font-size: 15px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: 0.5px;
+}
+
+.preset-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,182,193,0.15) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .preset-button:hover {
-    background: rgba(79,70,229,0.15);
-    border-color: rgba(79,70,229,0.3);
+    background: rgba(255,182,193,0.15);
+    border-color: rgba(255,182,193,0.3);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(79,70,229,0.2);
+    box-shadow: 0 4px 12px rgba(255,182,193,0.2);
+}
+
+.preset-button:hover::before {
+    opacity: 1;
 }
 
 .preset-button:active {
@@ -266,12 +318,12 @@ Button */
     flex-direction: column;
     gap: 8px;
     animation: notificationAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 24px rgba(255,182,193,0.2);
     width: 100%;
-    background: linear-gradient(135deg, rgba(61,61,61,0.7) 0%, rgba(51,51,51,0.7) 100%);
+    background: linear-gradient(135deg, rgba(255,245,245,0.7) 0%, rgba(255,228,228,0.7) 100%);
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,182,193,0.3);
     position: relative;
     box-sizing: border-box;
     padding-right: 90px;
@@ -281,16 +333,16 @@ Button */
 }
 
 .timer-notification:hover {
-    background: linear-gradient(135deg, rgba(71,71,71,0.7) 0%, rgba(61,61,61,0.7) 100%);
-    border-color: rgba(255,255,255,0.15);
+    background: linear-gradient(135deg, rgba(255,245,245,0.8) 0%, rgba(255,228,228,0.8) 100%);
+    border-color: rgba(255,182,193,0.4);
     transform: translateX(4px);
-    box-shadow: 0 6px 28px rgba(0,0,0,0.25);
+    box-shadow: 0 6px 28px rgba(255,182,193,0.25);
 }
 
 /* Timer note style */
 .timer-note {
     font-size: 13px;
-    color: #e0e0e0;
+    color: #ff69b4;
     margin-right: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -305,7 +357,7 @@ Button */
 .timer-display {
     font-size: 15px;
     font-weight: 600;
-    color: #e0e0e0;
+    color: #ff1493;
     width: 100%;
     text-align: left;
     margin-right: 0;
@@ -330,28 +382,46 @@ Button */
 .notification-button {
     background: transparent;
     border: none;
-    color: #e0e0e0;
+    color: #ff69b4;
     cursor: pointer;
-    width: 32px;
-    height: 32px;
-    font-size: 14px;
+    width: 36px;
+    height: 36px;
+    font-size: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 6px;
+    border-radius: 8px;
     -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
     border: 1px solid transparent;
     margin: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.notification-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,105,180,0.15) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .notification-button:hover {
-    background: rgba(239,68,68,0.15);
-    border-color: rgba(239,68,68,0.3);
-    color: #ef4444;
+    background: rgba(255,105,180,0.15);
+    border-color: rgba(255,105,180,0.3);
+    color: #ff1493;
     transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(239,68,68,0.2);
+    box-shadow: 0 4px 12px rgba(255,105,180,0.2);
+}
+
+.notification-button:hover::before {
+    opacity: 1;
 }
 
 .notification-button:active {
@@ -541,8 +611,8 @@ Button */
 .timer-notification.expired,
 .alarm-notification.expired {
     animation: timerExpired 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    background: linear-gradient(135deg, rgba(239,68,68,0.2) 0%, rgba(220,38,38,0.2) 100%);
-    border-color: rgba(239,68,68,0.3);
+    background: linear-gradient(135deg, rgba(255,105,180,0.2) 0%, rgba(255,20,147,0.2) 100%);
+    border-color: rgba(255,105,180,0.3);
     transform-origin: center;
 }
 
@@ -565,8 +635,8 @@ Button */
 .timer-notification.paused,
 .alarm-notification.paused {
     animation: timerPaused 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    background: linear-gradient(135deg, rgba(245,158,11,0.2) 0%, rgba(217,119,6,0.2) 100%);
-    border-color: rgba(245,158,11,0.3);
+    background: linear-gradient(135deg, rgba(255,182,193,0.2) 0%, rgba(255,192,203,0.2) 100%);
+    border-color: rgba(255,182,193,0.3);
     opacity: 0.8;
     transform-origin: center;
 }

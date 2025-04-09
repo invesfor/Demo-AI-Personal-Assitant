@@ -1,37 +1,172 @@
 /* Kiểu dáng cơ bản */
 body {
-    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
     margin: 0;
     padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #e6f3ff 0%, #cce6ff 100%);
+    color: #2c3e50;
+    min-height: 100vh;
     display: flex;
-    color: #e0e0e0;
-    font-weight: 500;
-    letter-spacing: 0.7px;
+    overflow-x: hidden;
 }
 
 /* Kiểu dáng chung cho nút */
 button {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    background-color: #60a5fa;
+    background: linear-gradient(135deg, #4dabf7 0%, #339af0 100%);
     color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 4px rgba(51, 154, 240, 0.2);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(51, 154, 240, 0.3);
+    background: linear-gradient(135deg, #339af0 0%, #228be6 100%);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(51, 154, 240, 0.2);
+}
+
+/* Primary button */
+.primary-button {
+    background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 15px;
     font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255,105,180,0.2);
 }
 
-/* Hiệu ứng khi di chuột qua nút */
-button:hover {
-    background-color: #3b82f6;
+.primary-button:hover {
+    background: linear-gradient(135deg, #ff1493 0%, #ff69b4 100%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 6px 16px rgba(255,105,180,0.3);
 }
 
-/* Hiệu ứng khi nhấn nút */
-button:active {
-    transform: translateY(0);
+/* Secondary button */
+.secondary-button {
+    background: rgba(255,182,193,0.1);
+    color: #ff69b4;
+    border: 1px solid rgba(255,182,193,0.2);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.secondary-button:hover {
+    background: rgba(255,182,193,0.15);
+    border-color: rgba(255,182,193,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255,182,193,0.2);
+}
+
+/* Icon button */
+.icon-button {
+    background: transparent;
+    color: #ff69b4;
+    border: 1px solid rgba(255,182,193,0.2);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.icon-button:hover {
+    background: rgba(255,182,193,0.1);
+    border-color: rgba(255,182,193,0.3);
+    color: #ff1493;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(255,182,193,0.2);
+}
+
+/* Disabled button */
+button:disabled {
+    background: #adb5bd;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Loading button */
+.loading-button {
+    position: relative;
+    color: transparent;
+}
+
+.loading-button::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin: -8px 0 0 -8px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: button-loading 0.8s linear infinite;
+}
+
+@keyframes button-loading {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Input styles */
+input {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #74c0fc;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 14px;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: #339af0;
+    box-shadow: 0 0 0 3px rgba(51, 154, 240, 0.2);
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #74c0fc;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #339af0;
 } 
